@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+  gather_facts: true
+  roles:
+    - role: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+      vars:
+        apt:
+          repos:
+            - name: githubcli
+              key_url: https://cli.github.com/packages/githubcli-archive-keyring.gpg
+              key_type: gpg
+              repo: "deb [arch=amd64] https://cli.github.com/packages stable main"
+          ppa_repos: []
+          packages:
+            - curl
+            - wget
+            - tree
+          do_upgrade: true

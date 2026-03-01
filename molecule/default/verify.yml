@@ -1,0 +1,60 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Check that curl is installed
+      ansible.builtin.command: which curl
+      register: curl_check
+      changed_when: false
+
+    - name: Assert curl is available
+      ansible.builtin.assert:
+        that:
+          - curl_check.rc == 0
+        fail_msg: "curl is not installed"
+
+    - name: Check that wget is installed
+      ansible.builtin.command: which wget
+      register: wget_check
+      changed_when: false
+
+    - name: Assert wget is available
+      ansible.builtin.assert:
+        that:
+          - wget_check.rc == 0
+        fail_msg: "wget is not installed"
+
+    - name: Check that tree is installed
+      ansible.builtin.command: which tree
+      register: tree_check
+      changed_when: false
+
+    - name: Assert tree is available
+      ansible.builtin.assert:
+        that:
+          - tree_check.rc == 0
+        fail_msg: "tree is not installed"
+
+    - name: Check that GPG key file exists for githubcli repo
+      ansible.builtin.stat:
+        path: /etc/apt/trusted.gpg.d/githubcli.gpg
+      register: gpg_key_stat
+
+    - name: Assert GPG key file exists
+      ansible.builtin.assert:
+        that:
+          - gpg_key_stat.stat.exists
+        fail_msg: "GPG key for githubcli repo was not installed"
+
+    - name: Check that githubcli repo is present in sources
+      ansible.builtin.command: grep -r "cli.github.com" /etc/apt/sources.list.d/
+      register: repo_check
+      changed_when: false
+
+    - name: Assert githubcli repo is configured
+      ansible.builtin.assert:
+        that:
+          - repo_check.rc == 0
+        fail_msg: "githubcli repository is not configured"

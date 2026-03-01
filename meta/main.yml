@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+galaxy_info:
+  role_name: apt_package_setup
+  namespace: fablab_ansbach
+  author: Kilian Kreibich
+  company: FabLab Ansbach e.v.
+  description: >-
+    Ansible role to set up apt packages and repositories on Debian-based systems.
+  license: MIT
+  min_ansible_version: "2.9"
+  galaxy_tags: []
+dependencies: []
