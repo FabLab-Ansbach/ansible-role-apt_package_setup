@@ -1,0 +1,14 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for packages
+apt:
+  repos: []
+  ppa_repos: []
+  packages: []
+  do_upgrade: true
+
+default_apt:
+  repos: []
+  ppa_repos: []
+  packages: []
+  do_upgrade: true

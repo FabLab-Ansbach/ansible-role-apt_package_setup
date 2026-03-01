@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install Python and essential tools
+      ansible.builtin.raw: apt-get update && apt-get install -y python3 gpg software-properties-common
+      changed_when: true

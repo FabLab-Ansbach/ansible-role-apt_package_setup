@@ -1,0 +1,42 @@
+---
+- name: Merge config with defaults
+  set_fact:
+    apt_config_effective: >-
+      {{
+        default_apt
+        | combine(apt | default({}), recursive=True)
+      }}
+
+- name: Download keys for additional repositories
+  ansible.builtin.get_url:
+    url: '{{ item.key_url }}'
+    dest: '/etc/apt/trusted.gpg.d/{{ item.name }}.{{ item.key_type }}'
+    mode: '0755'
+  loop: '{{ apt_config_effective.repos }}'
+
+- name: Install additional repositories
+  ansible.builtin.apt_repository:
+    repo: '{{ item.repo }}'
+    state: present
+  loop: '{{ apt_config_effective.repos }}'
+
+- name: Install additional ppa repositories
+  ansible.builtin.apt_repository:
+    repo: '{{ item.repo }}'
+    state: present
+  loop: '{{ apt_config_effective.ppa_repos }}'
+
+- name: Reload apt package cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: "Run package Update"
+  ansible.builtin.apt:
+    upgrade: yes
+  when: apt_config_effective.do_upgrade | bool
+
+- name: Install required apt packages
+  ansible.builtin.apt:
+    name: '{{ item }}'
+    state: present
+  loop: '{{ apt_config_effective.packages }}'
